@@ -1,1 +1,1 @@
-# trauma
+print("Hello world")
