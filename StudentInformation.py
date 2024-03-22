@@ -10,7 +10,7 @@ def add_student():
     print(f"Student {name} added successfully!")
     print(students_dict)
 
-def search_student():
+def search_student(): 
     name = input("Enter the name of the student you want to search for: ")
     if name in students_dict:
         print(f"Student found! Name: {name}, Age: {students_dict[name]['age']}, Grade: {students_dict[name]['grade']}")

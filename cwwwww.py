@@ -4,7 +4,7 @@ def main():
     patient_queue = Queue()
 
     while True:
-        print("\n1. Register Patient")
+        print("Register Patient")
         print("2. Remove Patient after Meeting Doctor")
         print("3. Display Patient Queue")
         print("4. Exit")

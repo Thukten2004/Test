@@ -9,8 +9,7 @@ for i in range(NoOfVisits):
     print(f"Visiting {url}")
     backward_history.put(current_page)
     current_page=url
-
-print(f"Current page:{current_page}")
+    print(f"Current page:{current_page}")
 while input("Do you want to go back? (yes/no)").lower=='yes':
     if not backward_history.empty():
         forward_history.put(current_page)
