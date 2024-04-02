@@ -37,5 +37,3 @@ while True:
         remove_student()
     elif choice == '4':
         break
-    else:
-        print("Invalid choice. Please try again.")

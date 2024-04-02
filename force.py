@@ -29,5 +29,5 @@ while True:
         print(f"Force (F) = {F}")
 
     else:
-        print("Invalid option selected for the missing value")
-        break
+        print("Invalid option selected for the missing value")1
+        
