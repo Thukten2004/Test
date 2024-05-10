@@ -1,5 +1,5 @@
 books_list=[]
-author_set={}
+author_set=set()
 books_dict={}
 
 books_list.append("Python Programming")

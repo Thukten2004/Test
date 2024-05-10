@@ -7,7 +7,10 @@ while True:
     print("1. Mass (m)")
     print("2. Acceleration (a)")
     print("3. Force (f)")
+    
+    
     missing_value_choice = input("Enter the option number for the missing value:")
+    
 
     #Promt the user to enter thr other two values
     if missing_value_choice == "1":
