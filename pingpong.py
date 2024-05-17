@@ -1,5 +1,8 @@
 import pygame
 import random
+import sys
+pygame.init()
+
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 # Define game constants
@@ -7,6 +10,24 @@ WIDTH, HEIGHT = 800, 600
 BALL_RADIUS = 10
 PADDLE_WIDTH = 100
 PADDLE_HEIGHT = 20
+font = pygame.font.Font(None, 36)
+
+# Game variables
+score = 0
+game_over = False
+
+# Countdown timer
+countdown = 3
+countdown_font = pygame.font.Font(None, 72)
+
+# Game loop
+clock = pygame.time.Clock()
+
+def reset_game():
+    global score, countdown, game_over
+    score = 0
+    countdown = 3
+    game_over = False
 class Ball:
     def __init__(self):
         self.x = WIDTH // 2
@@ -67,21 +88,63 @@ class Game:
             game_over_rect.center = (WIDTH // 2, HEIGHT // 2)
             screen.blit(game_over_text, game_over_rect)
 def main():
-    pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Ping Pong")
-    clock = pygame.time.Clock()
-    game = Game()
-    while not game.game_over:
-        game.handle_events()
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            game.paddle.move("left")
-        if keys[pygame.K_RIGHT]:
-            game.paddle.move("right")
-        game.update()
-        game.draw(screen)
+    game_state = GameState()
+    countdown = CountdownTimer(3)
+
+    while True:
+        screen.fill(BLACK)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        if countdown.active:
+            countdown.update()
+        else:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP] and game_state.paddle_y > 0:
+                game_state.paddle_y -= game_state.paddle_speed
+            if keys[pygame.K_DOWN] and game_state.paddle_y < screen_height - game_state.paddle_height:
+                game_state.paddle_y += game_state.paddle_speed
+
+            if not game_state.game_over:
+                game_state.ball_x += game_state.ball_speed_x
+                game_state.ball_y += game_state.ball_speed_y
+
+                if game_state.ball_y <= 0 or game_state.ball_y >= screen_height - game_state.ball_size:
+                    game_state.ball_speed_y *= -1
+
+                if game_state.ball_x <= 0:
+                    game_state.game_over = True
+                elif game_state.ball_x >= screen_width - game_state.ball_size:
+                    if game_state.paddle_y <= game_state.ball_y <= game_state.paddle_y + game_state.paddle_height:
+                        game_state.score += 1
+                        game_state.ball_speed_x *= -1
+                    else:
+                        game_state.game_over = True
+
+            # Drawing paddle and ball
+            pygame.draw.rect(screen, WHITE, pygame.Rect(game_state.paddle_x, game_state.paddle_y, game_state.paddle_width, game_state.paddle_height))
+            pygame.draw.ellipse(screen, WHITE, pygame.Rect(game_state.ball_x, game_state.ball_y, game_state.ball_size, game_state.ball_size))
+
+            # Draw score
+            draw_text(f"Score: {game_state.score}", font, WHITE, 100, 50)
+
+            if game_state.game_over:
+                draw_text("Game Over", font, WHITE, screen_width // 2, screen_height // 2)
+                draw_text(f"Your score: {game_state.score}", font, WHITE, screen_width // 2, screen_height // 2 + 50)
+                draw_text("Press Space to play again", font, WHITE, screen_width // 2, screen_height // 2 + 100)
+                pygame.display.flip()
+
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_SPACE]:
+                    game_state.reset_game()
+                    countdown.start()
+
+        countdown.draw(screen)
         pygame.display.flip()
         clock.tick(60)
+
     pygame.quit()
 main()
